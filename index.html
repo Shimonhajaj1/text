@@ -196,10 +196,10 @@
         <h1>החתונה של מאיר מרגי ושובל בוחבוט</h1>
         <div class="event-details">
             <h2>האירוע יתקיים באולמי אודיסאה</h2>
-            <h2>הנרייטה סולד 4, באר שבע</h2>
+            <h2>הנרייטה סולד 4, תל אביב-יפו</h2>
         </div>
         <div class="date-info">
-            <div>2025 | 10 | 27</div>
+            <div>27 | 10 | 25</div>
             <div>יום שני</div>
             <div>ה' בחשון</div>
         </div>
@@ -308,28 +308,22 @@
             }
 
             const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
             
-            if (data.rsvpStatus === 'לא') {
-                data.quantity = '1';
-            } else if ((data.rsvpStatus === 'כן' || data.rsvpStatus === 'אולי') && (!data.quantity || parseInt(data.quantity) < 1)) {
+            // Handle quantity for 'לא'
+            if (formData.get('rsvpStatus') === 'לא') {
+                formData.set('quantity', '1');
+            } else if ((formData.get('rsvpStatus') === 'כן' || formData.get('rsvpStatus') === 'אולי') && (!formData.get('quantity') || parseInt(formData.get('quantity')) < 1)) {
                 alert('נא להזין כמות אורחים תקנית (לפחות 1).');
                 return;
             }
-
+            
             submitButton.disabled = true;
             submitButton.innerText = 'שולח...';
 
+            // Send data to Google Apps Script using FormData
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                redirect: 'follow',
+                body: formData, // Sending FormData directly
             })
             .then(response => response.text())
             .then(text => {
@@ -355,3 +349,6 @@
     </script>
 </body>
 </html>
+
+
+
